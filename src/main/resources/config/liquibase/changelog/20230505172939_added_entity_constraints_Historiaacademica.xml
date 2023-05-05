@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity Historiaacademica.
+    -->
+    <changeSet id="20230505172939-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="user_id_id"
+                                 baseTableName="historiaacademica"
+                                 constraintName="fk_historiaacademica__user_id_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="planestudios_id_id"
+                                 baseTableName="historiaacademica"
+                                 constraintName="fk_historiaacademica__planestudios_id_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="planestudios"/>
+    </changeSet>
+</databaseChangeLog>

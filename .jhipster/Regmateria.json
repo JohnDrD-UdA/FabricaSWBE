@@ -1,0 +1,33 @@
+{
+  "changelogDate": "20230505173207",
+  "dto": "no",
+  "fields": [
+    {
+      "fieldName": "estado",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "10"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "Regmateria",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "materia",
+      "relationshipName": "materiaId",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"]
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "historiaacademica",
+      "relationshipName": "historiaacademicaId",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"]
+    }
+  ],
+  "service": "serviceImpl"
+}
