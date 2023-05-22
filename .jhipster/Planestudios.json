@@ -11,6 +11,11 @@
       "fieldName": "facultad",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "nombreprograma",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
   "jpaMetamodelFiltering": false,

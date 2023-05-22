@@ -30,6 +30,10 @@ public class Planestudios implements Serializable {
     @Column(name = "facultad", nullable = false)
     private String facultad;
 
+    @NotNull
+    @Column(name = "nombreprograma", nullable = false)
+    private String nombreprograma;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -71,6 +75,19 @@ public class Planestudios implements Serializable {
         this.facultad = facultad;
     }
 
+    public String getNombreprograma() {
+        return this.nombreprograma;
+    }
+
+    public Planestudios nombreprograma(String nombreprograma) {
+        this.setNombreprograma(nombreprograma);
+        return this;
+    }
+
+    public void setNombreprograma(String nombreprograma) {
+        this.nombreprograma = nombreprograma;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -97,6 +114,7 @@ public class Planestudios implements Serializable {
             "id=" + getId() +
             ", idprograma=" + getIdprograma() +
             ", facultad='" + getFacultad() + "'" +
+            ", nombreprograma='" + getNombreprograma() + "'" +
             "}";
     }
 }

@@ -50,6 +50,9 @@ public class PlanestudiosServiceImpl implements PlanestudiosService {
                 if (planestudios.getFacultad() != null) {
                     existingPlanestudios.setFacultad(planestudios.getFacultad());
                 }
+                if (planestudios.getNombreprograma() != null) {
+                    existingPlanestudios.setNombreprograma(planestudios.getNombreprograma());
+                }
 
                 return existingPlanestudios;
             })

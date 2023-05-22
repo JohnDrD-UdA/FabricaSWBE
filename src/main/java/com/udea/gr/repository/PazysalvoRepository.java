@@ -2,6 +2,7 @@ package com.udea.gr.repository;
 
 import com.udea.gr.domain.Pazysalvo;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,4 +10,8 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PazysalvoRepository extends JpaRepository<Pazysalvo, Long> {}
+public interface PazysalvoRepository extends JpaRepository<Pazysalvo, Long> {
+
+    @Query("select ps from Pazysalvo ps where ps.historiaacademicaId.estudianteid.documento= :id")
+    Pazysalvo GetByUserDoc(@Param("id") String ID);
+}

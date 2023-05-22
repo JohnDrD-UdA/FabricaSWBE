@@ -2,31 +2,22 @@ package com.udea.gr.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.udea.gr.IntegrationTest;
+import com.udea.gr.domain.Estudiante;
 import com.udea.gr.domain.Historiaacademica;
 import com.udea.gr.domain.Planestudios;
-import com.udea.gr.domain.User;
 import com.udea.gr.repository.HistoriaacademicaRepository;
-import com.udea.gr.service.HistoriaacademicaService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link HistoriaacademicaResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class HistoriaacademicaResourceIT {
@@ -49,12 +39,6 @@ class HistoriaacademicaResourceIT {
 
     @Autowired
     private HistoriaacademicaRepository historiaacademicaRepository;
-
-    @Mock
-    private HistoriaacademicaRepository historiaacademicaRepositoryMock;
-
-    @Mock
-    private HistoriaacademicaService historiaacademicaServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -73,11 +57,6 @@ class HistoriaacademicaResourceIT {
     public static Historiaacademica createEntity(EntityManager em) {
         Historiaacademica historiaacademica = new Historiaacademica();
         // Add required entity
-        User user = UserResourceIT.createEntity(em);
-        em.persist(user);
-        em.flush();
-        historiaacademica.setUserId(user);
-        // Add required entity
         Planestudios planestudios;
         if (TestUtil.findAll(em, Planestudios.class).isEmpty()) {
             planestudios = PlanestudiosResourceIT.createEntity(em);
@@ -87,6 +66,16 @@ class HistoriaacademicaResourceIT {
             planestudios = TestUtil.findAll(em, Planestudios.class).get(0);
         }
         historiaacademica.setPlanestudiosId(planestudios);
+        // Add required entity
+        Estudiante estudiante;
+        if (TestUtil.findAll(em, Estudiante.class).isEmpty()) {
+            estudiante = EstudianteResourceIT.createEntity(em);
+            em.persist(estudiante);
+            em.flush();
+        } else {
+            estudiante = TestUtil.findAll(em, Estudiante.class).get(0);
+        }
+        historiaacademica.setEstudianteid(estudiante);
         return historiaacademica;
     }
 
@@ -99,11 +88,6 @@ class HistoriaacademicaResourceIT {
     public static Historiaacademica createUpdatedEntity(EntityManager em) {
         Historiaacademica historiaacademica = new Historiaacademica();
         // Add required entity
-        User user = UserResourceIT.createEntity(em);
-        em.persist(user);
-        em.flush();
-        historiaacademica.setUserId(user);
-        // Add required entity
         Planestudios planestudios;
         if (TestUtil.findAll(em, Planestudios.class).isEmpty()) {
             planestudios = PlanestudiosResourceIT.createUpdatedEntity(em);
@@ -113,6 +97,16 @@ class HistoriaacademicaResourceIT {
             planestudios = TestUtil.findAll(em, Planestudios.class).get(0);
         }
         historiaacademica.setPlanestudiosId(planestudios);
+        // Add required entity
+        Estudiante estudiante;
+        if (TestUtil.findAll(em, Estudiante.class).isEmpty()) {
+            estudiante = EstudianteResourceIT.createUpdatedEntity(em);
+            em.persist(estudiante);
+            em.flush();
+        } else {
+            estudiante = TestUtil.findAll(em, Estudiante.class).get(0);
+        }
+        historiaacademica.setEstudianteid(estudiante);
         return historiaacademica;
     }
 
@@ -170,23 +164,6 @@ class HistoriaacademicaResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(historiaacademica.getId().intValue())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllHistoriaacademicasWithEagerRelationshipsIsEnabled() throws Exception {
-        when(historiaacademicaServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restHistoriaacademicaMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(historiaacademicaServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllHistoriaacademicasWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(historiaacademicaServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restHistoriaacademicaMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(historiaacademicaRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test

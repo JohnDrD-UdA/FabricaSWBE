@@ -1,10 +1,15 @@
 package com.udea.gr.service.impl;
 
+import com.udea.gr.Constants.PazySalvoConts;
+import com.udea.gr.DTO.pazysalvoValidarResponse;
+import com.udea.gr.DTO.studentDataResponse;
 import com.udea.gr.domain.Pazysalvo;
 import com.udea.gr.repository.PazysalvoRepository;
 import com.udea.gr.service.PazysalvoService;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,33 +47,33 @@ public class PazysalvoServiceImpl implements PazysalvoService {
         log.debug("Request to partially update Pazysalvo : {}", pazysalvo);
 
         return pazysalvoRepository
-            .findById(pazysalvo.getId())
-            .map(existingPazysalvo -> {
-                if (pazysalvo.getFecha() != null) {
-                    existingPazysalvo.setFecha(pazysalvo.getFecha());
-                }
-                if (pazysalvo.getMateriasobl() != null) {
-                    existingPazysalvo.setMateriasobl(pazysalvo.getMateriasobl());
-                }
-                if (pazysalvo.getMateriaselec() != null) {
-                    existingPazysalvo.setMateriaselec(pazysalvo.getMateriaselec());
-                }
-                if (pazysalvo.getPendientesnota() != null) {
-                    existingPazysalvo.setPendientesnota(pazysalvo.getPendientesnota());
-                }
-                if (pazysalvo.getBiblioteca() != null) {
-                    existingPazysalvo.setBiblioteca(pazysalvo.getBiblioteca());
-                }
-                if (pazysalvo.getCartera() != null) {
-                    existingPazysalvo.setCartera(pazysalvo.getCartera());
-                }
-                if (pazysalvo.getImpedimento() != null) {
-                    existingPazysalvo.setImpedimento(pazysalvo.getImpedimento());
-                }
+                .findById(pazysalvo.getId())
+                .map(existingPazysalvo -> {
+                    if (pazysalvo.getFecha() != null) {
+                        existingPazysalvo.setFecha(pazysalvo.getFecha());
+                    }
+                    if (pazysalvo.getMateriasobl() != null) {
+                        existingPazysalvo.setMateriasobl(pazysalvo.getMateriasobl());
+                    }
+                    if (pazysalvo.getMateriaselec() != null) {
+                        existingPazysalvo.setMateriaselec(pazysalvo.getMateriaselec());
+                    }
+                    if (pazysalvo.getPendientesnota() != null) {
+                        existingPazysalvo.setPendientesnota(pazysalvo.getPendientesnota());
+                    }
+                    if (pazysalvo.getBiblioteca() != null) {
+                        existingPazysalvo.setBiblioteca(pazysalvo.getBiblioteca());
+                    }
+                    if (pazysalvo.getCartera() != null) {
+                        existingPazysalvo.setCartera(pazysalvo.getCartera());
+                    }
+                    if (pazysalvo.getImpedimento() != null) {
+                        existingPazysalvo.setImpedimento(pazysalvo.getImpedimento());
+                    }
 
-                return existingPazysalvo;
-            })
-            .map(pazysalvoRepository::save);
+                    return existingPazysalvo;
+                })
+                .map(pazysalvoRepository::save);
     }
 
     @Override
@@ -89,5 +94,33 @@ public class PazysalvoServiceImpl implements PazysalvoService {
     public void delete(Long id) {
         log.debug("Request to delete Pazysalvo : {}", id);
         pazysalvoRepository.deleteById(id);
+    }
+
+    @Override
+    public pazysalvoValidarResponse getRequisitosByUserDoc(String id) {
+        try {
+            Pazysalvo ps = pazysalvoRepository.GetByUserDoc(id);
+            if (ps == null || ps.getId() == null) {
+                throw new Exception();
+            }
+            pazysalvoValidarResponse response = new pazysalvoValidarResponse();
+            response.biblioteca = Optional.of(ps.getBiblioteca());
+            response.cartera = Optional.of(ps.getCartera());
+            response.impedimento = Optional.of(ps.getImpedimento());
+            response.materiasElec = Optional.of(ps.getMateriaselec());
+            response.materiasOb = Optional.of(ps.getMateriasobl());
+            response.pendientesNotas = Optional.of(ps.getPendientesnota());
+            response.studentData = Optional.of(new studentDataResponse());
+            response.studentData.get().name = ps.getHistoriaacademicaId().getEstudianteid().getNombre();
+            response.studentData.get().program = ps.getHistoriaacademicaId().getPlanestudiosId().getNombreprograma();
+            response.studentData.get().programCode = String
+                    .valueOf(ps.getHistoriaacademicaId().getPlanestudiosId().getIdprograma());
+            response.msg = new PazySalvoConts().FOUND;
+            return response;
+        } catch (Exception e) {
+            pazysalvoValidarResponse response = new pazysalvoValidarResponse();
+            response.msg = new PazySalvoConts().NOT_FOUND;
+            return response;
+        }
     }
 }

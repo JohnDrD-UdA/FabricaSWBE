@@ -1,5 +1,6 @@
 package com.udea.gr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -24,11 +25,12 @@ public class Historiaacademica implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    private User userId;
+    private Planestudios planestudiosId;
 
     @ManyToOne(optional = false)
     @NotNull
-    private Planestudios planestudiosId;
+    @JsonIgnoreProperties(value = { "userid" }, allowSetters = true)
+    private Estudiante estudianteid;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -45,19 +47,6 @@ public class Historiaacademica implements Serializable {
         this.id = id;
     }
 
-    public User getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(User user) {
-        this.userId = user;
-    }
-
-    public Historiaacademica userId(User user) {
-        this.setUserId(user);
-        return this;
-    }
-
     public Planestudios getPlanestudiosId() {
         return this.planestudiosId;
     }
@@ -68,6 +57,19 @@ public class Historiaacademica implements Serializable {
 
     public Historiaacademica planestudiosId(Planestudios planestudios) {
         this.setPlanestudiosId(planestudios);
+        return this;
+    }
+
+    public Estudiante getEstudianteid() {
+        return this.estudianteid;
+    }
+
+    public void setEstudianteid(Estudiante estudiante) {
+        this.estudianteid = estudiante;
+    }
+
+    public Historiaacademica estudianteid(Estudiante estudiante) {
+        this.setEstudianteid(estudiante);
         return this;
     }
 

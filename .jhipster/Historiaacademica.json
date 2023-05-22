@@ -8,18 +8,16 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "login",
-      "otherEntityName": "user",
-      "otherEntityRelationshipName": "historiaacademica",
-      "ownerSide": true,
-      "relationshipName": "userId",
+      "otherEntityField": "id",
+      "otherEntityName": "planestudios",
+      "relationshipName": "planestudiosId",
       "relationshipType": "many-to-one",
       "relationshipValidateRules": ["required"]
     },
     {
       "otherEntityField": "id",
-      "otherEntityName": "planestudios",
-      "relationshipName": "planestudiosId",
+      "otherEntityName": "estudiante",
+      "relationshipName": "estudianteid",
       "relationshipType": "many-to-one",
       "relationshipValidateRules": ["required"]
     }

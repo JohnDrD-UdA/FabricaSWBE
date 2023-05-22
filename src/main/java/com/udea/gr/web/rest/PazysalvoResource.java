@@ -1,5 +1,7 @@
 package com.udea.gr.web.rest;
 
+import com.udea.gr.DTO.pazysalvoValidarRequest;
+import com.udea.gr.DTO.pazysalvoValidarResponse;
 import com.udea.gr.domain.Pazysalvo;
 import com.udea.gr.repository.PazysalvoRepository;
 import com.udea.gr.service.PazysalvoService;
@@ -46,37 +48,43 @@ public class PazysalvoResource {
      * {@code POST  /pazysalvos} : Create a new pazysalvo.
      *
      * @param pazysalvo the pazysalvo to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new pazysalvo, or with status {@code 400 (Bad Request)} if the pazysalvo has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new pazysalvo, or with status {@code 400 (Bad Request)} if
+     *         the pazysalvo has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/pazysalvos")
-    public ResponseEntity<Pazysalvo> createPazysalvo(@Valid @RequestBody Pazysalvo pazysalvo) throws URISyntaxException {
+    public ResponseEntity<Pazysalvo> createPazysalvo(@Valid @RequestBody Pazysalvo pazysalvo)
+            throws URISyntaxException {
         log.debug("REST request to save Pazysalvo : {}", pazysalvo);
         if (pazysalvo.getId() != null) {
             throw new BadRequestAlertException("A new pazysalvo cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Pazysalvo result = pazysalvoService.save(pazysalvo);
         return ResponseEntity
-            .created(new URI("/api/pazysalvos/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .created(new URI("/api/pazysalvos/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME,
+                        result.getId().toString()))
+                .body(result);
     }
 
     /**
      * {@code PUT  /pazysalvos/:id} : Updates an existing pazysalvo.
      *
-     * @param id the id of the pazysalvo to save.
+     * @param id        the id of the pazysalvo to save.
      * @param pazysalvo the pazysalvo to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pazysalvo,
-     * or with status {@code 400 (Bad Request)} if the pazysalvo is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the pazysalvo couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated pazysalvo,
+     *         or with status {@code 400 (Bad Request)} if the pazysalvo is not
+     *         valid,
+     *         or with status {@code 500 (Internal Server Error)} if the pazysalvo
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/pazysalvos/{id}")
     public ResponseEntity<Pazysalvo> updatePazysalvo(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Pazysalvo pazysalvo
-    ) throws URISyntaxException {
+            @PathVariable(value = "id", required = false) final Long id,
+            @Valid @RequestBody Pazysalvo pazysalvo) throws URISyntaxException {
         log.debug("REST request to update Pazysalvo : {}, {}", id, pazysalvo);
         if (pazysalvo.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -91,27 +99,31 @@ public class PazysalvoResource {
 
         Pazysalvo result = pazysalvoService.update(pazysalvo);
         return ResponseEntity
-            .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pazysalvo.getId().toString()))
-            .body(result);
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
+                        pazysalvo.getId().toString()))
+                .body(result);
     }
 
     /**
-     * {@code PATCH  /pazysalvos/:id} : Partial updates given fields of an existing pazysalvo, field will ignore if it is null
+     * {@code PATCH  /pazysalvos/:id} : Partial updates given fields of an existing
+     * pazysalvo, field will ignore if it is null
      *
-     * @param id the id of the pazysalvo to save.
+     * @param id        the id of the pazysalvo to save.
      * @param pazysalvo the pazysalvo to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pazysalvo,
-     * or with status {@code 400 (Bad Request)} if the pazysalvo is not valid,
-     * or with status {@code 404 (Not Found)} if the pazysalvo is not found,
-     * or with status {@code 500 (Internal Server Error)} if the pazysalvo couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated pazysalvo,
+     *         or with status {@code 400 (Bad Request)} if the pazysalvo is not
+     *         valid,
+     *         or with status {@code 404 (Not Found)} if the pazysalvo is not found,
+     *         or with status {@code 500 (Internal Server Error)} if the pazysalvo
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/pazysalvos/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Pazysalvo> partialUpdatePazysalvo(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Pazysalvo pazysalvo
-    ) throws URISyntaxException {
+            @PathVariable(value = "id", required = false) final Long id,
+            @NotNull @RequestBody Pazysalvo pazysalvo) throws URISyntaxException {
         log.debug("REST request to partial update Pazysalvo partially : {}, {}", id, pazysalvo);
         if (pazysalvo.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,15 +139,15 @@ public class PazysalvoResource {
         Optional<Pazysalvo> result = pazysalvoService.partialUpdate(pazysalvo);
 
         return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pazysalvo.getId().toString())
-        );
+                result,
+                HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, pazysalvo.getId().toString()));
     }
 
     /**
      * {@code GET  /pazysalvos} : get all the pazysalvos.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of pazysalvos in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of pazysalvos in body.
      */
     @GetMapping("/pazysalvos")
     public List<Pazysalvo> getAllPazysalvos() {
@@ -147,7 +159,8 @@ public class PazysalvoResource {
      * {@code GET  /pazysalvos/:id} : get the "id" pazysalvo.
      *
      * @param id the id of the pazysalvo to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the pazysalvo, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the pazysalvo, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/pazysalvos/{id}")
     public ResponseEntity<Pazysalvo> getPazysalvo(@PathVariable Long id) {
@@ -167,8 +180,19 @@ public class PazysalvoResource {
         log.debug("REST request to delete Pazysalvo : {}", id);
         pazysalvoService.delete(id);
         return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
-            .build();
+                .noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+                .build();
+    }
+
+    @PostMapping("/paz-y-salvos/validar-requisitos")
+    public ResponseEntity<pazysalvoValidarResponse> validarRequisitos(@RequestBody pazysalvoValidarRequest request) {
+        pazysalvoValidarResponse res = this.pazysalvoService.getRequisitosByUserDoc(request.studentIdDoc);
+        System.out.println("entre");
+        if (res != null) {
+            return ResponseEntity.ok()
+                    .body(res);
+        }
+        return ResponseEntity.badRequest().body(res);
     }
 }

@@ -35,7 +35,7 @@ public class Regmateria implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "userId", "planestudiosId" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "planestudiosId", "estudianteid" }, allowSetters = true)
     private Historiaacademica historiaacademicaId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

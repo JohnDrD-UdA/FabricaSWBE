@@ -35,6 +35,9 @@ class PlanestudiosResourceIT {
     private static final String DEFAULT_FACULTAD = "AAAAAAAAAA";
     private static final String UPDATED_FACULTAD = "BBBBBBBBBB";
 
+    private static final String DEFAULT_NOMBREPROGRAMA = "AAAAAAAAAA";
+    private static final String UPDATED_NOMBREPROGRAMA = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/planestudios";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -59,7 +62,10 @@ class PlanestudiosResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Planestudios createEntity(EntityManager em) {
-        Planestudios planestudios = new Planestudios().idprograma(DEFAULT_IDPROGRAMA).facultad(DEFAULT_FACULTAD);
+        Planestudios planestudios = new Planestudios()
+            .idprograma(DEFAULT_IDPROGRAMA)
+            .facultad(DEFAULT_FACULTAD)
+            .nombreprograma(DEFAULT_NOMBREPROGRAMA);
         return planestudios;
     }
 
@@ -70,7 +76,10 @@ class PlanestudiosResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Planestudios createUpdatedEntity(EntityManager em) {
-        Planestudios planestudios = new Planestudios().idprograma(UPDATED_IDPROGRAMA).facultad(UPDATED_FACULTAD);
+        Planestudios planestudios = new Planestudios()
+            .idprograma(UPDATED_IDPROGRAMA)
+            .facultad(UPDATED_FACULTAD)
+            .nombreprograma(UPDATED_NOMBREPROGRAMA);
         return planestudios;
     }
 
@@ -94,6 +103,7 @@ class PlanestudiosResourceIT {
         Planestudios testPlanestudios = planestudiosList.get(planestudiosList.size() - 1);
         assertThat(testPlanestudios.getIdprograma()).isEqualTo(DEFAULT_IDPROGRAMA);
         assertThat(testPlanestudios.getFacultad()).isEqualTo(DEFAULT_FACULTAD);
+        assertThat(testPlanestudios.getNombreprograma()).isEqualTo(DEFAULT_NOMBREPROGRAMA);
     }
 
     @Test
@@ -150,6 +160,23 @@ class PlanestudiosResourceIT {
 
     @Test
     @Transactional
+    void checkNombreprogramaIsRequired() throws Exception {
+        int databaseSizeBeforeTest = planestudiosRepository.findAll().size();
+        // set the field null
+        planestudios.setNombreprograma(null);
+
+        // Create the Planestudios, which fails.
+
+        restPlanestudiosMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(planestudios)))
+            .andExpect(status().isBadRequest());
+
+        List<Planestudios> planestudiosList = planestudiosRepository.findAll();
+        assertThat(planestudiosList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllPlanestudios() throws Exception {
         // Initialize the database
         planestudiosRepository.saveAndFlush(planestudios);
@@ -161,7 +188,8 @@ class PlanestudiosResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(planestudios.getId().intValue())))
             .andExpect(jsonPath("$.[*].idprograma").value(hasItem(DEFAULT_IDPROGRAMA)))
-            .andExpect(jsonPath("$.[*].facultad").value(hasItem(DEFAULT_FACULTAD)));
+            .andExpect(jsonPath("$.[*].facultad").value(hasItem(DEFAULT_FACULTAD)))
+            .andExpect(jsonPath("$.[*].nombreprograma").value(hasItem(DEFAULT_NOMBREPROGRAMA)));
     }
 
     @Test
@@ -177,7 +205,8 @@ class PlanestudiosResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(planestudios.getId().intValue()))
             .andExpect(jsonPath("$.idprograma").value(DEFAULT_IDPROGRAMA))
-            .andExpect(jsonPath("$.facultad").value(DEFAULT_FACULTAD));
+            .andExpect(jsonPath("$.facultad").value(DEFAULT_FACULTAD))
+            .andExpect(jsonPath("$.nombreprograma").value(DEFAULT_NOMBREPROGRAMA));
     }
 
     @Test
@@ -199,7 +228,7 @@ class PlanestudiosResourceIT {
         Planestudios updatedPlanestudios = planestudiosRepository.findById(planestudios.getId()).get();
         // Disconnect from session so that the updates on updatedPlanestudios are not directly saved in db
         em.detach(updatedPlanestudios);
-        updatedPlanestudios.idprograma(UPDATED_IDPROGRAMA).facultad(UPDATED_FACULTAD);
+        updatedPlanestudios.idprograma(UPDATED_IDPROGRAMA).facultad(UPDATED_FACULTAD).nombreprograma(UPDATED_NOMBREPROGRAMA);
 
         restPlanestudiosMockMvc
             .perform(
@@ -215,6 +244,7 @@ class PlanestudiosResourceIT {
         Planestudios testPlanestudios = planestudiosList.get(planestudiosList.size() - 1);
         assertThat(testPlanestudios.getIdprograma()).isEqualTo(UPDATED_IDPROGRAMA);
         assertThat(testPlanestudios.getFacultad()).isEqualTo(UPDATED_FACULTAD);
+        assertThat(testPlanestudios.getNombreprograma()).isEqualTo(UPDATED_NOMBREPROGRAMA);
     }
 
     @Test
@@ -301,6 +331,7 @@ class PlanestudiosResourceIT {
         Planestudios testPlanestudios = planestudiosList.get(planestudiosList.size() - 1);
         assertThat(testPlanestudios.getIdprograma()).isEqualTo(UPDATED_IDPROGRAMA);
         assertThat(testPlanestudios.getFacultad()).isEqualTo(DEFAULT_FACULTAD);
+        assertThat(testPlanestudios.getNombreprograma()).isEqualTo(DEFAULT_NOMBREPROGRAMA);
     }
 
     @Test
@@ -315,7 +346,7 @@ class PlanestudiosResourceIT {
         Planestudios partialUpdatedPlanestudios = new Planestudios();
         partialUpdatedPlanestudios.setId(planestudios.getId());
 
-        partialUpdatedPlanestudios.idprograma(UPDATED_IDPROGRAMA).facultad(UPDATED_FACULTAD);
+        partialUpdatedPlanestudios.idprograma(UPDATED_IDPROGRAMA).facultad(UPDATED_FACULTAD).nombreprograma(UPDATED_NOMBREPROGRAMA);
 
         restPlanestudiosMockMvc
             .perform(
@@ -331,6 +362,7 @@ class PlanestudiosResourceIT {
         Planestudios testPlanestudios = planestudiosList.get(planestudiosList.size() - 1);
         assertThat(testPlanestudios.getIdprograma()).isEqualTo(UPDATED_IDPROGRAMA);
         assertThat(testPlanestudios.getFacultad()).isEqualTo(UPDATED_FACULTAD);
+        assertThat(testPlanestudios.getNombreprograma()).isEqualTo(UPDATED_NOMBREPROGRAMA);
     }
 
     @Test

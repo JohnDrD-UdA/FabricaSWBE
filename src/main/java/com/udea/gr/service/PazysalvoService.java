@@ -1,5 +1,6 @@
 package com.udea.gr.service;
 
+import com.udea.gr.DTO.pazysalvoValidarResponse;
 import com.udea.gr.domain.Pazysalvo;
 import java.util.List;
 import java.util.Optional;
@@ -53,4 +54,13 @@ public interface PazysalvoService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * returns requirements of a student with matching ID
+     * 
+     * @param id
+     * @return requirements info or null
+     */
+
+    pazysalvoValidarResponse getRequisitosByUserDoc(String id);
 }
