@@ -84,6 +84,9 @@
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
 
         <!-- jhipster-needle-maven-property -->
+        <!-- sonarcloud -->
+        <sonar.organization>julian-castanoj</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencyManagement>
